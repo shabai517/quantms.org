@@ -5,7 +5,7 @@ import store from './store'
 import * as ELIcons from '@element-plus/icons-vue'
 
 const app = createApp(App)
-router.afterEach((to, from, next) => {
+router.afterEach(() => {
   window.scrollTo(0, 0)
 })
 for (const iconName in ELIcons) {

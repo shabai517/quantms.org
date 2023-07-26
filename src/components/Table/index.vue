@@ -50,10 +50,12 @@
   </el-table>
 </template>
 <script setup>
+import { defineProps } from 'vue';
 defineProps({
   table: {
     type: Object
   }
 })
+
 </script>
 <style lang="scss" scoped></style>

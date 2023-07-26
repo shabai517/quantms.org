@@ -18,9 +18,9 @@
       reanalysis results and publication information.
     </p>
     <p class="body-title">absolute-expression</p>
-    <Table v-model:table="tableDataAE"></Table>
+    <Table :modelValue="tableDataAE" @update:modelValue="tableDataAE = $event"></Table>
     <p class="body-title">differential-expression</p>
-    <Table v-model:table="tableDataDE"></Table>
+    <Table :modelValue="tableDataDE" @update:modelValue="tableDataDE = $event"></Table>
   </div>
 </template>
 <script setup>
