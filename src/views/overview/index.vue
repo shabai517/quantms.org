@@ -64,11 +64,11 @@ const options = [
     label: 'Homo sapiens'
   }
 ]
-// 加载页面时请求表单
+// load protein table
 onMounted(() => {
   getProteinTable()
 })
-// 获取完整表单
+// get full table
 const proteinTable = reactive([])
 const getProteinTable = async () => {
   const res = await getProteins()
@@ -115,7 +115,7 @@ let myChart
 
 const init = (data) => {
   if (myChart != null && myChart !== '' && myChart !== undefined) {
-    myChart.dispose() // 销毁
+    myChart.dispose() // discard
   }
   myChart = echarts.init(chart.value)
   const option = {

@@ -17,9 +17,9 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'https://6d17-106-81-248-49.ngrok.io/',
-        // 跨域配置
+        // 
         changeOrigin: true,
-        // 路径重写
+        // 
         pathRewrite: {
           '^/api': ''
         }
