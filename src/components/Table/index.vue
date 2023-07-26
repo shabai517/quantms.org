@@ -27,7 +27,7 @@
         </div>
         PubmedID:
         <span v-for="pubmed in scope.row.title.pubmedId" :key="pubmed.id">
-          <text v-html="'&nbsp;'"></text>
+          <text></text>
           <el-link :href="pubmed.path" type="primary">
             {{ pubmed.id }}
           </el-link>
@@ -50,7 +50,7 @@
   </el-table>
 </template>
 <script setup>
-import { defineProps } from 'vue';
+// import { defineProps } from 'vue';
 defineProps({
   table: {
     type: Object

@@ -9,5 +9,6 @@ module.exports = {
   ],
   rules: {
     // Add your project-specific ESLint rules here, if needed
+    'vue/multi-word-component-names': 0,
   },
 };
