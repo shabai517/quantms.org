@@ -2,7 +2,7 @@
   <div class="common-layout">
     <el-container>
       <el-aside width="200px" class="aside">
-        <el-affix>
+        <el-affix position="top" :offset="20">
           <Menu />
         </el-affix>
       </el-aside>
