@@ -119,7 +119,7 @@ const init = (data) => {
   for (let i = 0; i < data.tags.length; i++) {
     let obj = {}
     obj['name'] = data.tags[i]
-    obj['data'] = data.data[i]
+    obj['data'] = data.data[i].filter(value=>value<=7)
     dataSort.push(obj)
   }
   // sort data
@@ -224,7 +224,7 @@ const init = (data) => {
         show: true
       },
       min: 1,
-      max: 7,
+      max: 7
     },
     dataZoom: [
       {
