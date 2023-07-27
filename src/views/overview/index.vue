@@ -35,7 +35,7 @@
       >
     </div>
     <p>
-      Find the iBAQ distribution for your protein of interest, e.g. ABCD4_HUMAN.
+      Find the iBAQ distribution for your protein of interest, e.g. ABCD4_HUMAN
     </p>
     <div class="info">
       <h1>Organism: <span>Homo sapiens</span></h1>
@@ -80,7 +80,7 @@ const getProteinTable = async () => {
 const queryProtein = (input) => {
   const proteinList = toRaw(proteinTable)
   const output = proteinList.find((item) => {
-    return item.name === input
+    return item.name === input.trim()
   })
   if (output) {
     protein.value = output.name
@@ -89,6 +89,7 @@ const queryProtein = (input) => {
     alert('Please enter a legal protein name')
   }
 }
+// sort data
 
 const font = ['V', 'i', 's', 'u', 'a', 'l', 'i', 'z', 'a', 't', 'i', 'o', 'n']
 const fontColor = [
@@ -114,6 +115,30 @@ const chart = ref()
 let myChart
 
 const init = (data) => {
+  let dataSort = []
+  for (let i = 0; i < data.tags.length; i++) {
+    let obj = {}
+    obj['name'] = data.tags[i]
+    obj['data'] = data.data[i]
+    dataSort.push(obj)
+  }
+  // sort data
+  dataSort.sort((obja,objb) => {
+    obja.data.sort((a, b) => { return a - b })
+    objb.data.sort((a, b) => { return a - b })
+    const lena = obja.data.length
+    const lenb = objb.data.length
+    const mida = obja.data[Math.floor(lena / 2)]
+    const midb = objb.data[Math.floor(lenb / 2)]
+    return mida - midb
+  })
+  // get sort column
+  let neatData = []
+  let tags = []
+  dataSort.map((item) => {
+    neatData.push(item.data)
+    tags.push(item.name)
+ })
   if (myChart != null && myChart !== '' && myChart !== undefined) {
     myChart.dispose() // discard
   }
@@ -127,14 +152,14 @@ const init = (data) => {
     ],
     dataset: [
       {
-        source: data.data
+        source: neatData
       },
       {
         transform: {
           type: 'boxplot',
           config: {
             itemNameFormatter: function (params) {
-              return data.tags[params.value]
+              return tags[params.value]
             }
           }
         }
@@ -198,7 +223,8 @@ const init = (data) => {
       splitArea: {
         show: true
       },
-      scale: true
+      min: 1,
+      max: 7,
     },
     dataZoom: [
       {
