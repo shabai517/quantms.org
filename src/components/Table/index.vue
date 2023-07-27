@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="table"
+    :data="modelValue"
     border
     style="width: 100%"
     :header-cell-style="{ backgroundColor: '#5AAC8A', color: '#000' }"
@@ -52,7 +52,7 @@
 <script setup>
 // import { defineProps } from 'vue';
 defineProps({
-  table: {
+  modelValue: {
     type: Object
   }
 })
