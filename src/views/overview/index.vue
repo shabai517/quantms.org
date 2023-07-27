@@ -115,7 +115,6 @@ const chart = ref()
 let myChart
 
 const init = (data) => {
-  console.log(data)
   let dataSort = []
   for (let i = 0; i < data.tags.length; i++) {
     let obj = {}
