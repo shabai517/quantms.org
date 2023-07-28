@@ -31,7 +31,7 @@
         class="input"
       />
       <router-link class='link' :to="{
-        path: '/ae/tissue',
+        path: '/ae/tissues',
         query: {
           protein: input
         }

@@ -21,8 +21,8 @@ const routes = [
         component: () => import('@/views/overview'),
         children: [
           {
-            path: 'tissue',
-            name: 'tissue',
+            path: 'tissues',
+            name: 'tissues',
             component: () => import('@/components/AeShow')
           }
         ]
