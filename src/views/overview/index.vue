@@ -30,31 +30,25 @@
         clearable
         class="input"
       />
-      <el-button type="primary" plain @click="queryProtein(input)"
-        >Search</el-button
-      >
+      <router-link class='link' :to="{
+        path: '/ae/tissues',
+        query: {
+          protein: input
+        }
+      }">
+      <el-button type="primary" plain >Search</el-button>
+      </router-link>
     </div>
     <p>
       Find the iBAQ distribution for your protein of interest, e.g. ABCD4_HUMAN
     </p>
-    <div class="info">
-      <h1>Organism: <span>Homo sapiens</span></h1>
-      <h1>
-        Protein: <span>{{ protein }}</span>
-      </h1>
-    </div>
     <!--  Image  -->
-    <div class="card">
-      <div ref="chart" style="width: 100%; height: 600px"></div>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script setup>
-import * as echarts from 'echarts'
-import { ref, onMounted, reactive, toRaw } from 'vue'
-import { getProteins } from '@/api/search'
-import { inflate } from 'pako'
+import { ref } from 'vue'
 // sapiens
 const sapiens = ref('')
 // select_menus
@@ -64,32 +58,7 @@ const options = [
     label: 'Homo sapiens'
   }
 ]
-// load protein table
-onMounted(() => {
-  getProteinTable()
-})
-// get full table
-const proteinTable = reactive([])
-const getProteinTable = async () => {
-  const res = await getProteins()
-  const byteArray = new Uint8Array(res.data)
-  const data = inflate(byteArray, { to: 'string' })
-  proteinTable.push(...JSON.parse(data))
-}
-// qeury
-const queryProtein = (input) => {
-  const proteinList = toRaw(proteinTable)
-  const output = proteinList.find((item) => {
-    return item.name === input.trim()
-  })
-  if (output) {
-    protein.value = output.name
-    init(output)
-  } else {
-    alert('Please enter a legal protein name')
-  }
-}
-// sort data
+
 
 const font = ['V', 'i', 's', 'u', 'a', 'l', 'i', 'z', 'a', 't', 'i', 'o', 'n']
 const fontColor = [
@@ -109,162 +78,6 @@ const fontColor = [
 ]
 // input protien name
 const input = ref('')
-// protein name
-const protein = ref('')
-const chart = ref()
-let myChart
-
-const init = (data) => {
-  let dataSort = []
-  for (let i = 0; i < data.tags.length; i++) {
-    let obj = {}
-    obj['name'] = data.tags[i]
-    obj['data'] = data.data[i].filter(value=>value<=7)
-    dataSort.push(obj)
-  }
-  // sort data
-  dataSort.sort((obja,objb) => {
-    obja.data.sort((a, b) => { return a - b })
-    objb.data.sort((a, b) => { return a - b })
-    const lena = obja.data.length
-    const lenb = objb.data.length
-    const mida = obja.data[Math.floor(lena / 2)]
-    const midb = objb.data[Math.floor(lenb / 2)]
-    return mida - midb
-  })
-  // get sort column
-  let neatData = []
-  let tags = []
-  dataSort.map((item) => {
-    neatData.push(item.data)
-    tags.push(item.name)
- })
-  if (myChart != null && myChart !== '' && myChart !== undefined) {
-    myChart.dispose() // discard
-  }
-  myChart = echarts.init(chart.value)
-  const option = {
-    title: [
-      {
-        text: data.title,
-        left: 'center'
-      }
-    ],
-    dataset: [
-      {
-        source: neatData
-      },
-      {
-        transform: {
-          type: 'boxplot',
-          config: {
-            itemNameFormatter: function (params) {
-              return tags[params.value]
-            }
-          }
-        }
-      },
-      {
-        fromDatasetIndex: 1,
-        fromTransformResult: 1
-      }
-    ],
-    tooltip: {
-      trigger: 'item',
-      axisPointer: {
-        type: 'shadow'
-      },
-      textStyle: {},
-      formatter: function (param) {
-        return [
-          "<div style='margin-bottom:5px;width:100%;border-radius:3px;text-align:center;family'><p>" +
-            param.data[0] +
-            ' </p></div>',
-          '<hr size=1 style="margin: 3px 0">',
-          "<span style='text-align:left;color:#8f9a7a;margin-right:15px;'>Max:</span>" +
-            parseFloat(param.data[5]).toFixed(2) +
-            '<br/>',
-          "<span style='text-align:left;color:#8f9a7a;margin-right:15px;'>Q3:</span>" +
-            parseFloat(param.data[4]).toFixed(2) +
-            '<br/>',
-          "<span style='text-align:left;color:#8f9a7a;margin-right:15px;'>Median:</span>" +
-            parseFloat(param.data[3]).toFixed(2) +
-            '<br/>',
-          "<span style='text-align:left;color:#8f9a7a;margin-right:15px;'>Q1:</span>" +
-            parseFloat(param.data[2]).toFixed(2) +
-            '<br/>',
-          "<span style='text-align:left;color:#8f9a7a;margin-right:15px;'>Min:</span>" +
-            parseFloat(param.data[1]).toFixed(2) +
-            '<br/>'
-        ].join('')
-      }
-    },
-    grid: {
-      left: '10%',
-      right: '10%',
-      bottom: '15%'
-    },
-    yAxis: {
-      type: 'category',
-      boundaryGap: true,
-      nameGap: 30,
-      splitArea: {
-        show: false
-      },
-      splitLine: {
-        show: false
-      }
-    },
-    xAxis: {
-      type: 'value',
-      name: 'riBAQ',
-      nameLocation: 'center',
-      nameGap: 30,
-      splitArea: {
-        show: true
-      },
-      min: 1,
-      max: 7
-    },
-    dataZoom: [
-      {
-        type: 'inside'
-      },
-      {
-        type: 'slider',
-        height: 10
-      }
-    ],
-    toolbox: {
-      feature: {
-        saveAsImage: {
-          type: 'png',
-          title: 'save as .png'
-        }
-      }
-    },
-    series: [
-      {
-        name: 'boxplot',
-        type: 'boxplot',
-        datasetIndex: 1,
-        itemStyle: {
-          color: '#06B800',
-          color0: '#FA0000',
-          borderColor: null,
-          borderColor0: null
-        }
-      },
-      {
-        name: 'outlier',
-        type: 'scatter',
-        encode: { x: 1, y: 0 },
-        datasetIndex: 2
-      }
-    ]
-  }
-  myChart.setOption(option)
-}
 </script>
 <style lang="scss" scoped>
 .display-box {
@@ -292,20 +105,6 @@ const init = (data) => {
 h1 {
   text-align: left;
 }
-.info {
-  text-align: left;
-  margin: 20px 0;
-  margin-left: 2px;
-}
-.info h1 {
-  font-size: 14px;
-  margin: 5px 0;
-  font-weight: inherit;
-  font-weight: 500;
-}
-.info span {
-  font-weight: 700;
-}
 .search-box {
   display: flex;
   margin-bottom: 2px;
@@ -321,5 +120,8 @@ h1 {
   font-size: 40px;
   // font-style: italic;
   font-family: 'Times New Roman', Times, serif;
+}
+.link {
+  text-decoration: none;
 }
 </style>
