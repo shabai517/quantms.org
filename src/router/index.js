@@ -4,31 +4,31 @@ const routes = [
   {
     path: '/',
     name: 'index',
-    redirect: 'home',
+    redirect: '/home',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../layout'),
     children: [
       {
-        path: 'information',
+        path: '/information',
         name: 'information',
         component: () => import('@/views/information')
       },
       {
-        path: 'ae',
+        path: '/ae',
         name: 'overview',
         component: () => import('@/views/overview'),
         children: [
           {
-            path: 'tissues',
+            path: '/ae/tissues',
             name: 'tissues',
             component: () => import('@/components/AeShow')
           }
         ]
       },
       {
-        path: 'home',
+        path: '/home',
         name: 'home',
         component: () => import('@/views/home')
       }
